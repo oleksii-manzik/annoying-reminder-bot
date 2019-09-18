@@ -1,1 +1,1 @@
-# AnnoyingReminderBot
+# annoying-reminder-bot
