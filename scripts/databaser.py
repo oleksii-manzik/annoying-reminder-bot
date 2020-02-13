@@ -20,10 +20,10 @@ def insert_chat_id(chat_id):
 
     # if no - insert it
     if len(species_and_task) == 0:
-        INSERT_SPECIES_QUERY = f"""INSERT INTO reminder (chat_id, species, task)
+        INSERT_SPECIES_QUERY = """INSERT INTO reminder (chat_id, species, task)
                             VALUES
-                            ({chat_id},'None','Завдання не назначено')"""
-        _run_query(INSERT_SPECIES_QUERY)
+                            ((%s),'None','Завдання не назначено')"""
+        _run_query(INSERT_SPECIES_QUERY, chat_id)
         logger.info(f'{chat_id} wasn\'t at db so the new row was added')
 
     # if yes - return species and task
@@ -35,7 +35,7 @@ def insert_chat_id(chat_id):
 def update_species(chat_id, species):
     """Update species for chat_id"""
 
-    UPDATE_SPECIES_QUERY = f"""UPDATE reminder 
+    UPDATE_SPECIES_QUERY = """UPDATE reminder 
                             SET species = '(%s)'
                             WHERE chat_id = (%s)"""
     _run_query(UPDATE_SPECIES_QUERY, species, chat_id)
@@ -45,7 +45,7 @@ def update_species(chat_id, species):
 def update_task(chat_id, task):
     """Update task for chat_id"""
 
-    UPDATE_TASK_QUERY = f"""UPDATE reminder 
+    UPDATE_TASK_QUERY = """UPDATE reminder 
                         SET task = (%s)
                         WHERE chat_id = (%s)"""
     _run_query(UPDATE_TASK_QUERY, task, chat_id)
@@ -55,7 +55,7 @@ def update_task(chat_id, task):
 def select_species_and_task(chat_id):
     """Return species and task for chat_id"""
 
-    SELECT_SPECIES_AND_TASK_QUERY = f"""SELECT species, task FROM reminder
+    SELECT_SPECIES_AND_TASK_QUERY = """SELECT species, task FROM reminder
                                     WHERE chat_id = (%s)"""
     species_and_task = _run_query(SELECT_SPECIES_AND_TASK_QUERY, chat_id)
     species_and_task = species_and_task[0] if len(species_and_task) > 0 else species_and_task
@@ -65,7 +65,7 @@ def select_species_and_task(chat_id):
 def delete_reminder(chat_id):
     """Delete row for chat_id in reminder table"""
 
-    DELETE_REMINDER_QUERY = f"""DELETE FROM reminder
+    DELETE_REMINDER_QUERY = """DELETE FROM reminder
                         WHERE chat_id = (%s)"""
     _run_query(DELETE_REMINDER_QUERY, chat_id)
     logger.info(f'{chat_id} was deleted from reminder table')
@@ -88,7 +88,7 @@ def insert_ongoing_processes(chat_ids):
     if len(chat_ids) > 0:
         for chat_id in chat_ids:
             _run_query(
-                f"""INSERT INTO ongoing_processes (chat_id)
+                """INSERT INTO ongoing_processes (chat_id)
                 VALUES ((%s))""", chat_id
             )
             logger.info(f'{chat_id} was inserted to ongoing_processes')
@@ -116,7 +116,7 @@ def select_ongoing_processes():
 def delete_ongoing_process(chat_id):
     """Delete row for chat_id in ongoing_processes table"""
 
-    DELETE_PROCESS_QUERY = f"""DELETE FROM ongoing_processes
+    DELETE_PROCESS_QUERY = """DELETE FROM ongoing_processes
                             WHERE chat_id = (%s)"""
     _run_query(DELETE_PROCESS_QUERY, chat_id)
     logger.info(f'{chat_id} was deleted from ongoing_processes table')
